@@ -78,7 +78,7 @@
 {
     OCKCareSchedule *schedule = [OCKCareSchedule dailyScheduleWithStartDate:[NSDateComponents weekAgoComponents]
                                                           occurrencesPerDay:2
-                                                                 daysToSkip:1
+                                                                 daysToSkip:0
                                                                     endDate:nil];
     NSString *instructions = NSLocalizedString(@"Take a 200 mg dose of Ibuprofen two times a day, "
                                                 "once in the morning and another in the evening.", nil);
