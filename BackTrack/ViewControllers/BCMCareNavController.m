@@ -57,6 +57,22 @@
     [self presentViewController:taskViewController animated:YES completion:nil];
 }
 
+- (BOOL)shouldEnablePullToRefreshInCareContentsViewController:(OCKCareContentsViewController *)viewController
+{
+    return YES;
+}
+
+- (void)careContentsViewController:(OCKCareContentsViewController *)viewController didActivatePullToRefreshControl:(UIRefreshControl *)refreshControl
+{
+    [self.bcmTabBarController.carePlanStore syncFromRemoteWithCompletion:^(BOOL success, NSArray<NSError *> * _Nonnull errors) {
+        if (!success) {
+            NSLog(@"[CMHealth] Failed to refresh data from remote %@", errors);
+        }
+        
+        [refreshControl endRefreshing];
+    }];
+}
+
 #pragma mark ORKTaskViewControllerDelegate
 
 - (void)taskViewController:(ORKTaskViewController *)taskViewController didFinishWithReason:(ORKTaskViewControllerFinishReason)reason error:(NSError *)error
