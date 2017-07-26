@@ -33,9 +33,12 @@ PODS:
   - ResearchKit (1.5.2)
 
 DEPENDENCIES:
+  - CareKit (from `../CareKit/`)
   - CMHealth (from `git@github.com:cloudmine/CMHealthSDK-iOS.git`)
 
 EXTERNAL SOURCES:
+  CareKit:
+    :path: ../CareKit/
   CMHealth:
     :git: git@github.com:cloudmine/CMHealthSDK-iOS.git
 
@@ -51,6 +54,6 @@ SPEC CHECKSUMS:
   CMHealth: 32b5fc2959fbfcd69c33cac5f8d3a43967d60b34
   ResearchKit: a5770681dd61afddd3d1f24d232b9abf00cba454
 
-PODFILE CHECKSUM: 52dced04a2d0afd91bd91f5529fcc55c1728cbd9
+PODFILE CHECKSUM: a52c7e53f89ab276553fe1451559d311427d89ec
 
 COCOAPODS: 1.2.1

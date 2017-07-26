@@ -7,9 +7,9 @@
 #import "OCKCarePlanEvent+BCM.h"
 #import "BCMTasks.h"
 
-@interface BCMCareNavController () <OCKCareContentsViewControllerDelegate, ORKTaskViewControllerDelegate>
+@interface BCMCareNavController () <OCKCareContentsViewControllerDelegate, OCKCareCardViewControllerDelegate, ORKTaskViewControllerDelegate>
 
-@property (nonatomic) OCKCareContentsViewController *careContentsViewController;
+@property (nonatomic) OCKCareCardViewController *careContentsViewController;
 
 @end
 
@@ -29,11 +29,23 @@
 - (void)reloadCareViewController
 {
     on_main_thread(^{
-        self.careContentsViewController = [[OCKCareContentsViewController alloc] initWithCarePlanStore:self.bcmTabBarController.carePlanStore];
+        self.careContentsViewController = [[OCKCareCardViewController alloc] initWithCarePlanStore:self.bcmTabBarController.carePlanStore];
         self.careContentsViewController.navigationItem.title = NSLocalizedString(@"Care Plan", nil);
         self.careContentsViewController.delegate = self;
         self.viewControllers = @[self.careContentsViewController];
     });
+}
+
+- (BOOL)shouldEnablePullToRefreshInCareCardViewController:(OCKCareCardViewController *)viewController
+{
+    return YES;
+}
+
+- (void)careCardViewController:(OCKCareCardViewController *)viewController didActivatePullToRefreshControl:(UIRefreshControl *)refreshControl
+{
+    [NSTimer scheduledTimerWithTimeInterval:3.0f repeats:NO block:^(NSTimer * _Nonnull timer) {
+        [refreshControl endRefreshing];
+    }];
 }
 
 #pragma mark OCKCareContentsViewControllerDelegate
@@ -61,22 +73,22 @@
 
 - (void)taskViewController:(ORKTaskViewController *)taskViewController didFinishWithReason:(ORKTaskViewControllerFinishReason)reason error:(NSError *)error
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
-    
-    if (reason != ORKTaskViewControllerFinishReasonCompleted) {
-        return;
-    }
-    
-    OCKCarePlanEvent *event = self.careContentsViewController.lastSelectedEvent;
-    ORKTaskResult *taskResult = taskViewController.result;
-    
-    NSAssert(nil != event &&
-             nil != taskResult &&
-             [event.activity.identifier isEqualToString:taskResult.identifier],
-             @"Expected care plan event and task result identifier to match. Got %@ and %@", event.activity.identifier, taskResult.identifier);
-    
-    [self completeEvent:event
-             withResult:[BCMTasks carePlanResultForTaskResult:taskResult]];   
+//    [self dismissViewControllerAnimated:YES completion:nil];
+//    
+//    if (reason != ORKTaskViewControllerFinishReasonCompleted) {
+//        return;
+//    }
+//    
+//    OCKCarePlanEvent *event = self.careContentsViewController.lastSelectedEvent;
+//    ORKTaskResult *taskResult = taskViewController.result;
+//    
+//    NSAssert(nil != event &&
+//             nil != taskResult &&
+//             [event.activity.identifier isEqualToString:taskResult.identifier],
+//             @"Expected care plan event and task result identifier to match. Got %@ and %@", event.activity.identifier, taskResult.identifier);
+//    
+//    [self completeEvent:event
+//             withResult:[BCMTasks carePlanResultForTaskResult:taskResult]];   
 }
 
 #pragma mark Helpers
