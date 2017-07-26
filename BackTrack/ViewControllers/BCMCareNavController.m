@@ -7,9 +7,9 @@
 #import "OCKCarePlanEvent+BCM.h"
 #import "BCMTasks.h"
 
-@interface BCMCareNavController () <OCKCareContentsViewControllerDelegate, OCKCareCardViewControllerDelegate, ORKTaskViewControllerDelegate>
+@interface BCMCareNavController () <OCKSymptomTrackerViewControllerDelegate, OCKCareContentsViewControllerDelegate, OCKCareCardViewControllerDelegate, ORKTaskViewControllerDelegate>
 
-@property (nonatomic) OCKCareCardViewController *careContentsViewController;
+@property (nonatomic) OCKSymptomTrackerViewController *careContentsViewController;
 
 @end
 
@@ -29,24 +29,36 @@
 - (void)reloadCareViewController
 {
     on_main_thread(^{
-        self.careContentsViewController = [[OCKCareCardViewController alloc] initWithCarePlanStore:self.bcmTabBarController.carePlanStore];
+        self.careContentsViewController = [[OCKSymptomTrackerViewController alloc] initWithCarePlanStore:self.bcmTabBarController.carePlanStore];
         self.careContentsViewController.navigationItem.title = NSLocalizedString(@"Care Plan", nil);
         self.careContentsViewController.delegate = self;
         self.viewControllers = @[self.careContentsViewController];
     });
 }
 
-- (BOOL)shouldEnablePullToRefreshInCareCardViewController:(OCKCareCardViewController *)viewController
+- (BOOL)shouldEnablePullToRefreshInSymptomTrackerViewController:(OCKSymptomTrackerViewController *)viewController
 {
     return YES;
 }
 
-- (void)careCardViewController:(OCKCareCardViewController *)viewController didActivatePullToRefreshControl:(UIRefreshControl *)refreshControl
+- (void)symptomTrackerViewController:(OCKSymptomTrackerViewController *)viewController didActivatePullToRefreshControl:(UIRefreshControl *)refreshControl
 {
     [NSTimer scheduledTimerWithTimeInterval:3.0f repeats:NO block:^(NSTimer * _Nonnull timer) {
         [refreshControl endRefreshing];
     }];
 }
+
+//- (BOOL)shouldEnablePullToRefreshInCareCardViewController:(OCKCareCardViewController *)viewController
+//{
+//    return YES;
+//}
+//
+//- (void)careCardViewController:(OCKCareCardViewController *)viewController didActivatePullToRefreshControl:(UIRefreshControl *)refreshControl
+//{
+//    [NSTimer scheduledTimerWithTimeInterval:3.0f repeats:NO block:^(NSTimer * _Nonnull timer) {
+//        [refreshControl endRefreshing];
+//    }];
+//}
 
 #pragma mark OCKCareContentsViewControllerDelegate
 
